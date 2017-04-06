@@ -48,7 +48,6 @@ if __name__ == "__main__":
                 go = False
             else:
                 red, green, blue = [int(s) for s in line.split() if s.isdigit()]
-                print((currentLine % xSize, int(currentLine / xSize)))
                 im.putpixel((currentLine % xSize, int(currentLine / xSize)), (red, green, blue))
                 currentLine += 1
-        im.save("YOLO.png")
+        im.save(sys.argv[3])
