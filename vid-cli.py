@@ -24,30 +24,52 @@
 # ========================================================================
 from PIL import Image
 import sys
+
+VERSION = "0.1"
+
 if __name__ == "__main__":
-    if sys.argv[1] == "vid":
-        im = Image.open(sys.argv[2])
-        lineSize = im.size[0]
-        descriptor = "This image got "+str(lineSize)+" pixel line length and got "+str(im.size[1])+" pixel column height.\n"
-        indice = 0
-        for pixel in im.getdata():
-            descriptor += "In the pixel number "+str(indice)+", there is an amount of red of "+str(pixel[0])+" , an amount of green of "+str(pixel[1])+" and an amount of blue of "+str(pixel[2])+" .\n"
-            indice += 1
-        file = open(sys.argv[2]+".vid", 'w')
-        file.write(descriptor)
-        file.close()
+
+    helpmessage = "=======================================================\n"+ \
+                  " Verbose Image Descriptor Command-Line Interface v."+VERSION+"\n" + \
+                  "======================================================= \n" + \
+                  "Usage : \n" + \
+                  "\tvid-cli.py vid input.png \n" + \
+                  "\tvid-cli.py unvid input.vid output.png\n" + \
+                  "=======================================================\n"
+
+    if len(sys.argv) < 3:
+        print(helpmessage)
+    elif sys.argv[1] == "vid":
+        if len(sys.argv) != 3:
+            print(helpmessage)
+        else:
+            im = Image.open(sys.argv[2])
+            lineSize = im.size[0]
+            descriptor = "This image got "+str(lineSize)+" pixel line length and got "+str(im.size[1])+" pixel column height.\n"
+            indice = 0
+            for pixel in im.getdata():
+                descriptor += "In the pixel number "+str(indice)+", there is an amount of red of "+str(pixel[0])+" , an amount of green of "+str(pixel[1])+" and an amount of blue of "+str(pixel[2])+" .\n"
+                indice += 1
+            file = open(sys.argv[2]+".vid", 'w')
+            file.write(descriptor)
+            file.close()
     elif sys.argv[1] == "unvid":
-        xSize, ySize = 0, 0
-        file = open(sys.argv[2], 'r')
-        go = True
-        currentLine = 0
-        for line in file:
-            if go:
-                xSize, ySize = [int(s) for s in line.split() if s.isdigit()]
-                im = Image.new("RGB", (xSize, ySize))
-                go = False
-            else:
-                red, green, blue = [int(s) for s in line.split() if s.isdigit()]
-                im.putpixel((currentLine % xSize, int(currentLine / xSize)), (red, green, blue))
-                currentLine += 1
-        im.save(sys.argv[3])
+        if len(sys.argv) != 4:
+            print(helpmessage)
+        else:
+            xSize, ySize = 0, 0
+            file = open(sys.argv[2], 'r')
+            go = True
+            currentLine = 0
+            for line in file:
+                if go:
+                    xSize, ySize = [int(s) for s in line.split() if s.isdigit()]
+                    im = Image.new("RGB", (xSize, ySize))
+                    go = False
+                else:
+                    red, green, blue = [int(s) for s in line.split() if s.isdigit()]
+                    im.putpixel((currentLine % xSize, int(currentLine / xSize)), (red, green, blue))
+                    currentLine += 1
+            im.save(sys.argv[3])
+    else:
+        print(helpmessage)
